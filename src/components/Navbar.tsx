@@ -31,7 +31,7 @@ export default function Navbar() {
             className="font-heading text-lg text-ink-muted hover:text-ink transition-colors"
           >
             {link.label}
-            <span className="text-xs ml-0.5">&nearr;</span>
+            <span className="text-xs ml-0.5">↗</span>
           </a>
         ))}
         {user && (

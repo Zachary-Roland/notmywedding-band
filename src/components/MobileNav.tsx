@@ -52,7 +52,7 @@ export default function MobileNav() {
               onClick={() => setOpen(false)}
               className="block font-heading text-xl text-ink-muted"
             >
-              {link.label} <span className="text-xs">&nearr;</span>
+              {link.label} <span className="text-xs">↗</span>
             </a>
           ))}
           {user && (

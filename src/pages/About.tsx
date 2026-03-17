@@ -39,13 +39,13 @@ export default function About() {
         ].map((photo, i) => (
           <div
             key={photo.src}
-            className="overflow-hidden rounded shadow-sm"
+            className="overflow-hidden rounded shadow-sm aspect-square"
             style={{ transform: `rotate(${i % 2 === 0 ? -1 : 1}deg)` }}
           >
             <img
               src={photo.src}
               alt={photo.alt}
-              className="w-full h-auto object-cover"
+              className="w-full h-full object-cover"
               loading="lazy"
             />
           </div>
