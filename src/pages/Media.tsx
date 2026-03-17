@@ -1,3 +1,61 @@
+import { useVideos } from "../hooks/useVideos";
+
 export default function Media() {
-  return <div className="p-8 font-heading text-2xl">media</div>;
+  const { videos, loading } = useVideos();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <span className="text-ink-muted font-heading text-lg">loading...</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto py-8 md:py-12 px-4">
+      <h1 className="font-display text-4xl md:text-5xl text-ink mb-8">media</h1>
+
+      {/* Videos */}
+      {videos.length > 0 && (
+        <div className="space-y-6 mb-12">
+          {videos.map((video) => (
+            <div key={video.id} className="space-y-2">
+              <div className="aspect-video w-full">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}`}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full rounded border border-ink-faint"
+                />
+              </div>
+              <p className="font-heading text-sm text-ink-muted">{video.title}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Photo Gallery */}
+      <h2 className="font-heading text-2xl text-ink mb-4">photos</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {[
+          { src: "/images/anna_live_oleavers.jpg", alt: "Live at O'Leavers" },
+          { src: "/images/live_show_oleavers.jpg", alt: "Live show" },
+          { src: "/images/anna_wheatfield.jpg", alt: "Anna in wheatfield" },
+          { src: "/images/annaholdingbandtote.jpg", alt: "Band tote" },
+          { src: "/images/annawearingbandtshirt.jpg", alt: "Band tshirt" },
+          { src: "/images/bphoto.jpg", alt: "Band photo" },
+        ].map((photo) => (
+          <div key={photo.src} className="overflow-hidden rounded shadow-sm">
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              className="w-full h-auto object-cover"
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
