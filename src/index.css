@@ -4,12 +4,12 @@
   --color-cream: #f5f0e8;
   --color-cream-light: #faf8f4;
   --color-ink: #2c2416;
-  --color-ink-muted: #2c241680;
+  --color-ink-muted: #6b5d4d;
   --color-ink-faint: #2c241633;
   --color-ink-dim: #2c241620;
-  --color-accent-rose: #c4867a;
-  --color-accent-sage: #8a9a7b;
-  --color-accent-ochre: #c9a84c;
+  --color-accent-rose: #805049;
+  --color-accent-sage: #4a5a3b;
+  --color-accent-ochre: #8a7030;
   --color-paper: #fffef9;
   --font-display: "Dancing Script", cursive;
   --font-heading: "Cormorant Garamond", serif;
@@ -20,45 +20,96 @@
   body {
     @apply bg-cream text-ink font-body antialiased;
     min-height: 100vh;
+    position: relative;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-heading);
   }
 
-  /* Paper texture overlay using CSS noise */
-  body::after {
+  /* Paper texture overlay — uses a real noise pattern via SVG filter */
+  body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.12;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    mix-blend-mode: multiply;
+    background-color: rgba(44, 36, 22, 0.04);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='4' type='fractalNoise' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='4' type='fractalNoise' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mask-size: 200px 200px;
+    -webkit-mask-size: 200px 200px;
   }
 
-  /* Torn edge clip path for link buttons */
-  .torn-edge {
+  /* Subtle grain overlay for extra texture */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.3;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.08'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* Torn paper edge effect using irregular SVG clip path */
+  .torn-paper {
+    position: relative;
+    filter: drop-shadow(2px 3px 4px rgba(44, 36, 22, 0.2));
+  }
+
+  .torn-paper::before {
+    content: "";
+    position: absolute;
+    inset: -4px -2px;
+    background: var(--color-paper);
+    z-index: -1;
     clip-path: polygon(
-      0% 2%, 3% 0%, 7% 1%, 11% 0%, 15% 2%, 19% 0%, 23% 1%, 27% 0%,
-      31% 2%, 35% 0%, 39% 1%, 43% 0%, 47% 2%, 51% 0%, 55% 1%, 59% 0%,
-      63% 2%, 67% 0%, 71% 1%, 75% 0%, 79% 2%, 83% 0%, 87% 1%, 91% 0%,
-      95% 2%, 100% 0%,
-      100% 98%, 97% 100%, 93% 99%, 89% 100%, 85% 98%, 81% 100%, 77% 99%,
-      73% 100%, 69% 98%, 65% 100%, 61% 99%, 57% 100%, 53% 98%, 49% 100%,
-      45% 99%, 41% 100%, 37% 98%, 33% 100%, 29% 99%, 25% 100%, 21% 98%,
-      17% 100%, 13% 99%, 9% 100%, 5% 98%, 0% 100%
+      2% 4%, 5% 1%, 8% 3%, 12% 0%, 16% 2%, 20% 1%, 24% 4%, 28% 1%,
+      32% 3%, 36% 0%, 40% 2%, 44% 1%, 48% 3%, 52% 0%, 56% 2%, 60% 4%,
+      64% 1%, 68% 3%, 72% 0%, 76% 2%, 80% 1%, 84% 3%, 88% 0%, 92% 2%,
+      96% 4%, 100% 1%,
+      100% 96%, 97% 100%, 93% 97%, 89% 100%, 85% 98%, 81% 100%, 77% 97%,
+      73% 100%, 69% 98%, 65% 100%, 61% 97%, 57% 100%, 53% 98%, 49% 100%,
+      45% 97%, 41% 100%, 37% 98%, 33% 100%, 29% 97%, 25% 100%, 21% 98%,
+      17% 100%, 13% 97%, 9% 100%, 5% 98%, 1% 100%, 0% 97%
     );
   }
 
-  /* Visible focus states */
+  .torn-paper:hover {
+    filter: drop-shadow(3px 6px 8px rgba(44, 36, 22, 0.3));
+    translate: 0 -2px;
+  }
+
+  /* Visible focus states — WCAG AA */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ink;
   }
 
   :focus:not(:focus-visible) {
     outline: none;
+  }
+
+  /* Ensure minimum tap target size — WCAG AA */
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Skip to content link for screen readers */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 10000;
+    padding: 8px 16px;
+    background: var(--color-ink);
+    color: var(--color-cream);
+  }
+
+  .skip-link:focus {
+    top: 0;
   }
 }

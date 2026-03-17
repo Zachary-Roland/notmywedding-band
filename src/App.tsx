@@ -1,5 +1,5 @@
 import { Component, Suspense, type ReactNode } from "react";
-import { Outlet, ScrollRestoration } from "react-router";
+import { Outlet, ScrollRestoration, useLocation } from "react-router";
 import Navbar from "./components/Navbar";
 import MobileNav from "./components/MobileNav";
 import Footer from "./components/Footer";
@@ -32,12 +32,18 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
 }
 
 export default function App() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   return (
     <div className="min-h-screen flex flex-col">
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <ScrollRestoration />
-      <Navbar />
-      <MobileNav />
-      <main className="flex-1">
+      <div className={isHome ? "hidden md:block" : ""}>
+        <Navbar />
+        <MobileNav />
+      </div>
+      <main id="main-content" className="flex-1">
         <ErrorBoundary>
           <Suspense
             fallback={<div className="fixed inset-0 z-[9998] bg-cream" />}

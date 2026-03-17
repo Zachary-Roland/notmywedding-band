@@ -6,21 +6,24 @@ interface ShowCardProps {
 
 export default function ShowCard({ show }: ShowCardProps) {
   const date = show.date.toDate();
-  const formatted = date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
+  const month = date.toLocaleDateString("en-US", { month: "short" });
+  const day = date.getDate();
 
   return (
-    <div className="border border-ink-faint rounded px-4 py-3 flex items-center justify-between gap-4 bg-paper">
-      <div>
-        <p className="text-sm font-semibold font-heading text-ink">{formatted}</p>
+    <div className="torn-paper bg-paper px-5 py-4 flex items-center gap-4"
+      style={{ transform: "rotate(-0.5deg)" }}
+    >
+      <div className="text-center min-w-[3.5rem] border-r border-ink-faint pr-4">
+        <p className="text-xs uppercase text-ink-muted font-body">{weekday}</p>
+        <p className="text-2xl font-bold font-heading text-ink leading-none">{day}</p>
+        <p className="text-xs uppercase text-ink-muted font-body">{month}</p>
+      </div>
+      <div className="flex-1 min-w-0">
         {show.billing && (
-          <p className="text-sm text-ink">{show.billing}</p>
+          <p className="font-heading text-base font-semibold text-ink">{show.billing}</p>
         )}
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm text-ink-muted font-body">
           {show.venue} — {show.city}
         </p>
       </div>
@@ -29,7 +32,7 @@ export default function ShowCard({ show }: ShowCardProps) {
           href={show.ticketUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs border border-ink px-3 py-1 rounded text-ink hover:bg-ink hover:text-cream transition-colors whitespace-nowrap font-body"
+          className="torn-paper bg-ink text-cream text-xs px-3 py-2 font-body whitespace-nowrap hover:translate-y-[-1px] transition-all"
         >
           tickets
         </a>

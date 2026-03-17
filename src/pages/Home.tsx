@@ -1,6 +1,9 @@
+import { Link } from "react-router";
 import { useLinks } from "../hooks/useLinks";
 import { useShows } from "../hooks/useShows";
 import { useSettings } from "../hooks/useSettings";
+import { useAuthContext } from "../context/AuthContext";
+import { navItems, externalLinks } from "../lib/navigation";
 import LinkButton from "../components/LinkButton";
 import ShowCard from "../components/ShowCard";
 import YouTubeEmbed from "../components/YouTubeEmbed";
@@ -8,6 +11,7 @@ import YouTubeEmbed from "../components/YouTubeEmbed";
 const rotations = [-1.5, 0.8, -0.5, 1.2, -0.8, 1.5, -1, 0.5];
 
 export default function Home() {
+  const { user } = useAuthContext();
   const { links, loading: linksLoading } = useLinks();
   const { upcomingShows, loading: showsLoading } = useShows();
   const { settings, loading: settingsLoading } = useSettings();
@@ -25,8 +29,18 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center py-8 md:py-12 px-4 gap-6 max-w-3xl mx-auto">
+      {/* Logo (mobile only -- desktop has navbar) */}
+      <h1 className="md:hidden font-display text-4xl text-ink">wedding</h1>
+
+      {/* Admin link when logged in (mobile only) */}
+      {user && (
+        <Link to="/admin" className="md:hidden text-sm text-ink-muted hover:text-ink transition-colors font-heading">
+          admin
+        </Link>
+      )}
+
       {/* Hero Image */}
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-sm md:max-w-2xl">
         <img
           src="/images/headerphoto.jpg"
           alt="Wedding"
@@ -34,15 +48,15 @@ export default function Home() {
         />
       </div>
 
-      {/* Logo (mobile only -- desktop has it in Navbar) */}
-      <h1 className="md:hidden font-display text-4xl text-ink">wedding</h1>
-
-      {/* YouTube Embed */}
-      {settings.youtubeEnabled && settings.youtubeUrl && (
-        <YouTubeEmbed url={settings.youtubeUrl} />
+      {/* Next Show */}
+      {nextShow && (
+        <div className="w-full max-w-md">
+          <p className="text-sm text-ink-muted mb-2 font-heading">next show</p>
+          <ShowCard show={nextShow} />
+        </div>
       )}
 
-      {/* Links */}
+      {/* Editable links first */}
       <div className="w-full flex flex-col items-center gap-4 py-4">
         {links.map((link, i) => (
           <LinkButton
@@ -52,14 +66,32 @@ export default function Home() {
             rotation={rotations[i % rotations.length] ?? 0}
           />
         ))}
+
+        {/* Nav page links + external links below (mobile only -- desktop has navbar) */}
+        {navItems.filter(item => item.path !== "/").map((item, i) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className="md:hidden torn-paper block w-full max-w-md bg-paper px-6 py-4 text-center font-heading text-lg text-ink transition-all duration-200"
+            style={{ transform: `rotate(${rotations[(i + links.length) % rotations.length]}deg)` }}
+          >
+            {item.label}
+          </Link>
+        ))}
+        {externalLinks.map((link, i) => (
+          <LinkButton
+            key={link.url}
+            label={link.label}
+            url={link.url}
+            rotation={rotations[(i + links.length + navItems.length) % rotations.length] ?? 0}
+            className="md:hidden"
+          />
+        ))}
       </div>
 
-      {/* Next Show */}
-      {nextShow && (
-        <div className="w-full max-w-md">
-          <p className="text-sm text-ink-muted mb-2 font-heading">next show</p>
-          <ShowCard show={nextShow} />
-        </div>
+      {/* YouTube Embed */}
+      {settings.youtubeEnabled && settings.youtubeUrl && (
+        <YouTubeEmbed url={settings.youtubeUrl} />
       )}
     </div>
   );

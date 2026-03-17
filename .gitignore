@@ -6,3 +6,5 @@ dist
 .superpowers/
 docs/superpowers/
 .claude/
+*.tsbuildinfo
+vite.config.d.ts

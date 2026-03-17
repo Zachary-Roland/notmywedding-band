@@ -6,7 +6,7 @@ export default function Navbar() {
   const { user } = useAuthContext();
 
   return (
-    <nav className="hidden md:flex items-center justify-between px-8 py-4 border-b border-ink-faint">
+    <nav aria-label="Main navigation" className="hidden md:flex items-center justify-between px-8 py-4 border-b border-ink-faint">
       <Link to="/" className="font-display text-3xl text-ink hover:text-ink-muted transition-colors">
         wedding
       </Link>
