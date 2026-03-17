@@ -1,1 +1,62 @@
 @import "tailwindcss";
+
+@theme {
+  --color-cream: #f5f0e8;
+  --color-cream-light: #faf8f4;
+  --color-ink: #2c2416;
+  --color-ink-muted: #2c241680;
+  --color-ink-faint: #2c241633;
+  --color-ink-dim: #2c241620;
+  --color-accent-rose: #c4867a;
+  --color-accent-sage: #8a9a7b;
+  --color-accent-ochre: #c9a84c;
+  --color-paper: #fffef9;
+  --font-display: "Dancing Script", cursive;
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Lora", serif;
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-ink font-body antialiased;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+  }
+
+  /* Subtle paper texture overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* Torn edge clip path for link buttons */
+  .torn-edge {
+    clip-path: polygon(
+      0% 2%, 3% 0%, 7% 1%, 11% 0%, 15% 2%, 19% 0%, 23% 1%, 27% 0%,
+      31% 2%, 35% 0%, 39% 1%, 43% 0%, 47% 2%, 51% 0%, 55% 1%, 59% 0%,
+      63% 2%, 67% 0%, 71% 1%, 75% 0%, 79% 2%, 83% 0%, 87% 1%, 91% 0%,
+      95% 2%, 100% 0%,
+      100% 98%, 97% 100%, 93% 99%, 89% 100%, 85% 98%, 81% 100%, 77% 99%,
+      73% 100%, 69% 98%, 65% 100%, 61% 99%, 57% 100%, 53% 98%, 49% 100%,
+      45% 99%, 41% 100%, 37% 98%, 33% 100%, 29% 99%, 25% 100%, 21% 98%,
+      17% 100%, 13% 99%, 9% 100%, 5% 98%, 0% 100%
+    );
+  }
+
+  /* Visible focus states */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ink;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
