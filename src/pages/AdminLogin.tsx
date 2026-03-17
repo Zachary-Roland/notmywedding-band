@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../lib/firebase";
 import { useAuthContext } from "../context/AuthContext";
 
 export default function AdminLogin() {
@@ -8,6 +10,7 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
@@ -65,6 +68,27 @@ export default function AdminLogin() {
           className="w-full border border-ink text-ink py-2 rounded hover:bg-ink hover:text-cream transition-colors disabled:opacity-50"
         >
           {submitting ? "logging in..." : "login"}
+        </button>
+
+        {message && <p className="text-accent-sage text-sm">{message}</p>}
+
+        <button
+          type="button"
+          onClick={async () => {
+            if (!email) { setError("Enter your email first."); return; }
+            if (!auth) return;
+            setError("");
+            setMessage("");
+            try {
+              await sendPasswordResetEmail(auth, email);
+              setMessage("Password reset email sent.");
+            } catch {
+              setError("Failed to send reset email.");
+            }
+          }}
+          className="text-sm text-ink-muted hover:text-ink transition-colors"
+        >
+          forgot password?
         </button>
       </form>
     </div>
