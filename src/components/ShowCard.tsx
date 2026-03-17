@@ -11,8 +11,12 @@ export default function ShowCard({ show }: ShowCardProps) {
   const day = date.getDate();
 
   return (
-    <div className="torn-paper bg-paper px-5 py-4 flex items-center gap-4"
-      style={{ transform: "rotate(-0.5deg)" }}
+    <div
+      className="bg-paper border border-ink-faint rounded-sm px-5 py-4 flex items-center gap-4"
+      style={{
+        transform: "rotate(-0.3deg)",
+        boxShadow: "2px 3px 6px rgba(44, 36, 22, 0.12)",
+      }}
     >
       <div className="text-center min-w-[3.5rem] border-r border-ink-faint pr-4">
         <p className="text-xs uppercase text-ink-muted font-body">{weekday}</p>
@@ -32,7 +36,7 @@ export default function ShowCard({ show }: ShowCardProps) {
           href={show.ticketUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="torn-paper bg-ink text-cream text-xs px-3 py-2 font-body whitespace-nowrap hover:translate-y-[-1px] transition-all"
+          className="border border-ink bg-ink text-cream text-xs px-4 py-2 rounded-sm font-body whitespace-nowrap hover:bg-transparent hover:text-ink transition-colors inline-flex items-center justify-center leading-none"
         >
           tickets
         </a>

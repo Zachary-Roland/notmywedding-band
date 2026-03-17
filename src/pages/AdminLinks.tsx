@@ -91,14 +91,16 @@ export default function AdminLinks() {
   const [url, setUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [youtubeEnabled, setYoutubeEnabled] = useState(false);
+  const [visibleNavLinks, setVisibleNavLinks] = useState<string[]>([]);
   const [error, setError] = useState("");
-  const [ytSaved, setYtSaved] = useState(false);
-  const ytSavedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     setYoutubeUrl(settings.youtubeUrl);
     setYoutubeEnabled(settings.youtubeEnabled);
-  }, [settings.youtubeUrl, settings.youtubeEnabled]);
+    setVisibleNavLinks(settings.visibleNavLinks);
+  }, [settings.youtubeUrl, settings.youtubeEnabled, settings.visibleNavLinks]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -167,18 +169,25 @@ export default function AdminLinks() {
     }
   }
 
-  async function handleYoutubeSettingsSave() {
+  function toggleNavLink(key: string) {
+    setVisibleNavLinks((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  }
+
+  async function handleSettingsSave() {
     setError("");
     try {
       await setDoc(doc(db, "settings", "home"), {
         youtubeUrl,
         youtubeEnabled,
+        visibleNavLinks,
       });
-      setYtSaved(true);
-      clearTimeout(ytSavedTimer.current);
-      ytSavedTimer.current = setTimeout(() => setYtSaved(false), 2000);
+      setSettingsSaved(true);
+      clearTimeout(savedTimer.current);
+      savedTimer.current = setTimeout(() => setSettingsSaved(false), 2000);
     } catch (err) {
-      setError(`Failed to save YouTube settings: ${err instanceof Error ? err.message : "unknown error"}`);
+      setError(`Failed to save settings: ${err instanceof Error ? err.message : "unknown error"}`);
     }
   }
 
@@ -255,35 +264,62 @@ export default function AdminLinks() {
         </DndContext>
       </div>
 
-      {/* YouTube Settings */}
-      <div className="space-y-3 border-t border-ink-faint pt-6">
+      {/* Homepage Settings */}
+      <div className="space-y-4 border-t border-ink-faint pt-6">
         <h2 className="text-sm font-bold text-ink-muted">
-          youtube embed
+          homepage settings
         </h2>
-        <label className="flex items-center gap-2 text-sm text-ink-muted cursor-pointer">
+
+        {/* Nav links on homepage */}
+        <div className="space-y-2">
+          <p className="text-xs text-ink-muted">show on homepage (mobile):</p>
+          {[
+            { key: "/about", label: "about" },
+            { key: "/shows", label: "shows" },
+            { key: "/media", label: "media" },
+            { key: "substack", label: "substack" },
+            { key: "bandcamp", label: "bandcamp" },
+          ].map((item) => (
+            <label key={item.key} className="flex items-center gap-2 text-sm text-ink-muted cursor-pointer">
+              <input
+                type="checkbox"
+                checked={visibleNavLinks.includes(item.key)}
+                onChange={() => toggleNavLink(item.key)}
+                className="accent-ink"
+              />
+              {item.label}
+            </label>
+          ))}
+        </div>
+
+        {/* YouTube embed */}
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-sm text-ink-muted cursor-pointer">
+            <input
+              type="checkbox"
+              checked={youtubeEnabled}
+              onChange={(e) => setYoutubeEnabled(e.target.checked)}
+              className="accent-ink"
+            />
+            show youtube embed on home page
+          </label>
           <input
-            type="checkbox"
-            checked={youtubeEnabled}
-            onChange={(e) => setYoutubeEnabled(e.target.checked)}
-            className="accent-ink"
+            type="url"
+            placeholder="YouTube URL"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            className="w-full bg-transparent border border-ink-faint rounded px-3 py-2 text-sm text-ink focus:outline-none focus:border-ink"
           />
-          show youtube embed on home page
-        </label>
-        <input
-          type="url"
-          placeholder="YouTube URL"
-          value={youtubeUrl}
-          onChange={(e) => setYoutubeUrl(e.target.value)}
-          className="w-full bg-transparent border border-ink-faint rounded px-3 py-2 text-sm text-ink focus:outline-none focus:border-ink"
-        />
+        </div>
+
         <div className="flex items-center gap-3">
           <button
-            onClick={handleYoutubeSettingsSave}
+            onClick={handleSettingsSave}
             className="border border-ink text-ink px-4 py-1.5 rounded text-sm hover:bg-ink hover:text-cream transition-colors"
           >
-            save youtube settings
+            save settings
           </button>
-          {ytSaved && (
+          {settingsSaved && (
             <span className="text-xs text-accent-sage">saved!</span>
           )}
         </div>

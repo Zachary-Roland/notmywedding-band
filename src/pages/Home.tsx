@@ -28,16 +28,9 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center py-8 md:py-12 px-4 gap-6 max-w-3xl mx-auto">
+    <div className="flex flex-col items-center py-6 md:py-6 px-4 gap-4 md:gap-5 max-w-3xl mx-auto">
       {/* Logo (mobile only -- desktop has navbar) */}
       <h1 className="md:hidden font-display text-4xl text-ink">wedding</h1>
-
-      {/* Admin link when logged in (mobile only) */}
-      {user && (
-        <Link to="/admin" className="md:hidden text-sm text-ink-muted hover:text-ink transition-colors font-heading">
-          admin
-        </Link>
-      )}
 
       {/* Hero Image */}
       <div className="w-full max-w-sm md:max-w-2xl">
@@ -57,7 +50,7 @@ export default function Home() {
       )}
 
       {/* Editable links first */}
-      <div className="w-full flex flex-col items-center gap-4 py-4">
+      <div className="w-full flex flex-col items-center gap-4">
         {links.map((link, i) => (
           <LinkButton
             key={link.id}
@@ -67,8 +60,10 @@ export default function Home() {
           />
         ))}
 
-        {/* Nav page links + external links below (mobile only -- desktop has navbar) */}
-        {navItems.filter(item => item.path !== "/").map((item, i) => (
+        {/* Nav page links (mobile only, filtered by admin settings) */}
+        {navItems
+          .filter(item => item.path !== "/" && settings.visibleNavLinks.includes(item.path))
+          .map((item, i) => (
           <Link
             key={item.path}
             to={item.path}
@@ -78,7 +73,10 @@ export default function Home() {
             {item.label}
           </Link>
         ))}
-        {externalLinks.map((link, i) => (
+        {/* External links (mobile only, filtered by admin settings) */}
+        {externalLinks
+          .filter(link => settings.visibleNavLinks.includes(link.label.toLowerCase()))
+          .map((link, i) => (
           <LinkButton
             key={link.url}
             label={link.label}
@@ -87,6 +85,13 @@ export default function Home() {
             className="md:hidden"
           />
         ))}
+
+        {/* Admin link when logged in (mobile only, at bottom of links) */}
+        {user && (
+          <Link to="/admin" className="md:hidden text-sm text-ink-muted hover:text-ink transition-colors font-heading mt-2">
+            admin
+          </Link>
+        )}
       </div>
 
       {/* YouTube Embed */}

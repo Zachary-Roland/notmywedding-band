@@ -5,11 +5,13 @@ import { db, firebaseConfigured } from "../lib/firebase";
 export interface HomeSettings {
   youtubeUrl: string;
   youtubeEnabled: boolean;
+  visibleNavLinks: string[];
 }
 
 const defaultSettings: HomeSettings = {
   youtubeUrl: "",
   youtubeEnabled: false,
+  visibleNavLinks: ["/about", "/shows", "/media", "substack", "bandcamp"],
 };
 
 export function useSettings() {
@@ -25,7 +27,11 @@ export function useSettings() {
       doc(db, "settings", "home"),
       (snapshot) => {
         if (snapshot.exists()) {
-          setSettings(snapshot.data() as HomeSettings);
+          const data = snapshot.data();
+          setSettings({
+            ...defaultSettings,
+            ...data,
+          } as HomeSettings);
         }
         setLoading(false);
       },

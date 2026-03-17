@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { NavLink, Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { navItems, externalLinks } from "../lib/navigation";
 import { useAuthContext } from "../context/AuthContext";
+
+const rotations = [-1.2, 0.7, -0.5, 1.0, -0.8, 1.3];
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  function handleNavClick(path: string) {
+    setOpen(false);
+    navigate(path);
+  }
 
   return (
     <div className="md:hidden">
@@ -15,56 +23,46 @@ export default function MobileNav() {
         </Link>
         <button
           onClick={() => setOpen(!open)}
-          className="text-ink p-2"
           aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          className="torn-paper bg-paper px-4 py-1.5 font-heading text-sm text-ink transition-all duration-200"
+          style={{ transform: "rotate(1.5deg)" }}
         >
-          {open ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          {open ? "close" : "menu"}
         </button>
       </div>
       {open && (
-        <div className="bg-cream border-b border-ink-faint px-4 py-4 space-y-3">
-          {navItems.map((item) => (
-            <NavLink
+        <div className="bg-cream border-b border-ink-faint px-4 py-6 flex flex-col items-center gap-3">
+          {navItems.map((item, i) => (
+            <button
               key={item.path}
-              to={item.path}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `block font-heading text-xl ${isActive ? "text-ink font-semibold" : "text-ink-muted"}`
-              }
+              onClick={() => handleNavClick(item.path)}
+              className="torn-paper block w-full max-w-xs bg-paper px-5 py-3 text-center font-heading text-lg text-ink transition-all duration-200"
+              style={{ transform: `rotate(${rotations[i % rotations.length]}deg)` }}
             >
               {item.label}
-            </NavLink>
+            </button>
           ))}
-          {externalLinks.map((link) => (
+          {externalLinks.map((link, i) => (
             <a
               key={link.url}
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="block font-heading text-xl text-ink-muted"
+              className="torn-paper block w-full max-w-xs bg-paper px-5 py-3 text-center font-heading text-lg text-ink transition-all duration-200"
+              style={{ transform: `rotate(${rotations[(i + navItems.length) % rotations.length]}deg)` }}
             >
-              {link.label} <span className="text-xs">↗</span>
+              {link.label}
             </a>
           ))}
           {user && (
-            <NavLink
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `block font-heading text-xl ${isActive ? "text-ink font-semibold" : "text-ink-muted"}`
-              }
+            <button
+              onClick={() => handleNavClick("/admin")}
+              className="text-sm text-ink-muted hover:text-ink transition-colors font-heading mt-2"
             >
               admin
-            </NavLink>
+            </button>
           )}
         </div>
       )}
