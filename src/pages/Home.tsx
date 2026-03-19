@@ -22,7 +22,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-cream">
-        <span className="text-ink-muted font-display text-2xl">wedding</span>
+        <img src="/images/chalk_logo_dark.png" alt="Wedding" className="h-32" />
       </div>
     );
   }
@@ -30,7 +30,9 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center py-6 md:py-6 px-4 gap-4 md:gap-5 max-w-3xl mx-auto">
       {/* Logo (mobile only -- desktop has navbar) */}
-      <h1 className="md:hidden font-display text-4xl text-ink">wedding</h1>
+      <h1 className="md:hidden">
+        <img src="/images/chalk_logo_dark.png" alt="Wedding" className="h-14" />
+      </h1>
 
       {/* Hero Image */}
       <div className="w-full max-w-sm md:max-w-2xl">

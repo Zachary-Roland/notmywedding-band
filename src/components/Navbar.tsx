@@ -6,9 +6,9 @@ export default function Navbar() {
   const { user } = useAuthContext();
 
   return (
-    <nav aria-label="Main navigation" className="hidden md:flex items-center justify-between px-8 py-4 border-b border-ink-faint">
-      <Link to="/" className="font-display text-3xl text-ink hover:text-ink-muted transition-colors">
-        wedding
+    <nav aria-label="Main navigation" className="hidden md:flex items-center justify-between px-8 py-2 border-b border-ink-faint">
+      <Link to="/" className="hover:opacity-80 transition-opacity">
+        <img src="/images/chalk_logo_dark.png" alt="Wedding" className="h-16" />
       </Link>
       <div className="flex items-center gap-6">
         {navItems.map((item) => (
