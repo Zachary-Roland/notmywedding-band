@@ -17,9 +17,9 @@ export default function MobileNav() {
 
   return (
     <div className="md:hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-ink-faint">
+      <div className="flex items-center justify-between px-4 py-1.5 border-b border-ink-faint">
         <Link to="/" className="hover:opacity-80 transition-opacity" onClick={() => setOpen(false)}>
-          <img src="/images/chalk_logo_dark.png" alt="Wedding" className="h-8" />
+          <img src="/images/chalk_logo_dark.png" alt="Wedding" className="h-14" />
         </Link>
         <button
           onClick={() => setOpen(!open)}
